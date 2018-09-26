@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include "config.h"
 #include "game.h"
+#include <unistd.h>
+
 
 int main(int argc, char *argv[])
 {
@@ -44,6 +46,9 @@ int main(int argc, char *argv[])
   game_print_board(game);
 
   for (generation = 1; generation <= game_config_get_generations(config); generation++) {
+
+    printf("\033[%d;%dH", 0, 0);
+    sleep(2);
     if (game_tick(game)) {
       fprintf(stderr, "Error while advancing to the next generation.\n");
       game_config_free(config);
