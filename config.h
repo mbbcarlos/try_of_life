@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define CLI_ARGC 3
+#define CLI_ARGC 4
 
 /**
  * Structure to hold the game options.
@@ -34,6 +34,7 @@
 typedef struct {
   size_t generations; /**< Number of generations for which to run the game. */
   FILE *input_file;   /**< The file with the seed board. */
+  int printBoard;
 } GameConfig;
 
 /**
@@ -42,6 +43,13 @@ typedef struct {
  * @param config Pointer to a GameConfig structure.
  */
 void game_config_free(GameConfig *config);
+
+/**
+ * Checks if the silent flag was used
+ * @param config
+ * @return 1 - -s wasn't use , 0 otherwise
+ */
+int game_print_all_boards(GameConfig *config);
 
 /**
  * Returns the number of generations for which to run the game.

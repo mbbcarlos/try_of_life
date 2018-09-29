@@ -19,7 +19,6 @@
 #include <pcre.h>
 #include <pthread.h>
 #include <string.h>
-#include <unistd.h>
 #include "config.h"
 #include "game.h"
 #include "mem.h"
@@ -246,8 +245,7 @@ int game_parse_board(Game *game, GameConfig *config)
 
 void game_print_board(Game *game)
 {
-  printf("\033[%d;%dH", 0, 0);
-  sleep(2);
+
   size_t col, row;
 
   assert(game);

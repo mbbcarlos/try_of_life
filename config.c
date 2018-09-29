@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include "config.h"
 #include "mem.h"
 
@@ -31,7 +32,8 @@ static const char *const usage_message =
     "Usage: glife GENERATIONS INPUT_FILE\n"
     "\n"
     "  GENERATIONS is the number of generations the game should run\n"
-    "  INPUT_FILE  is a file containing an initial board state\n" "\n";
+    "  INPUT_FILE  is a file containing an initial board state\n"
+    "  FLAG there's an optional -s (silent) flag to only show the last board\n""\n";
 
 void game_config_free(GameConfig *config)
 {
@@ -48,6 +50,12 @@ size_t game_config_get_generations(GameConfig *config)
   return config->generations;
 }
 
+int game_print_all_boards(GameConfig *config){
+    assert(config);
+
+    return config->printBoard;
+}
+
 GameConfig *game_config_new_from_cli(int argc, char *argv[])
 {
   char *endptr;
@@ -55,7 +63,7 @@ GameConfig *game_config_new_from_cli(int argc, char *argv[])
   GameConfig *config;
   long generations;
 
-  if (argc != CLI_ARGC) {
+  if (argc > CLI_ARGC) {
     fprintf(stderr, usage_message);
     return NULL;
   }
@@ -76,5 +84,16 @@ GameConfig *game_config_new_from_cli(int argc, char *argv[])
   config->generations = (size_t) generations;
   config->input_file = file;
 
-  return config;
+
+    if (argc == CLI_ARGC) {
+        if (!strcmp(argv[CLI_ARGC - 1], "-s"))
+            config->printBoard = 0;
+        else {
+            printf("That flag is not a option.");
+            return NULL;
+        }
+    } else config->printBoard = 1;
+
+
+    return config;
 }

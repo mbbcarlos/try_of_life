@@ -17,7 +17,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <unistd.h>
 #include "config.h"
 #include "game.h"
 
@@ -27,7 +27,6 @@ int main(int argc, char *argv[])
   GameConfig *config;
   Game *game;
   size_t generation;
-  int print = 1;
 
   config = game_config_new_from_cli(argc, argv);
   if (!config)
@@ -42,15 +41,10 @@ int main(int argc, char *argv[])
 
     exit(1);
   }
-
-  if(argc > CLI_ARGC && !strcmp(argv[3], "-s")) {
-    print = 0;
-    printf("Not printing boards");
+  if ( game_print_all_boards(config)) {
+    printf("Seed board:\n");
+    game_print_board(game);
   }
-
-
-  printf("Seed board:\n");
-  game_print_board(game);
 
   for (generation = 1; generation <= game_config_get_generations(config); generation++) {
 
@@ -60,9 +54,14 @@ int main(int argc, char *argv[])
       game_free(game);
     }
 
-    printf("\nGeneration %u:\n", generation);
-    if ( print == 1 || generation == game_config_get_generations(config) )
+
+    if ( game_print_all_boards(config) || generation == game_config_get_generations(config) ) {
+      printf("\033[%d;%dH", 0, 0);
+      usleep(1000000);
+      printf("\nGeneration %u:\n", generation);
       game_print_board(game);
+    }
+
   }
 
   game_config_free(config);
